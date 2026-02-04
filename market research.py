@@ -46,66 +46,42 @@ llm = ChatOpenAI(
     openai_api_key=user_api_key
 )
 
-# %%
-# set system prompt
-system_prompt = "YOUR TEXT HERE"
+ # --- STEP 1: Industry Input & Validation [cite: 46, 47] ---
+    industry = st.text_input("Enter an industry to research:")
+    
+    if st.button("Generate Report"):
+        if not industry:
+            st.warning("Please provide an industry to proceed.")
+        else:
+            # --- STEP 2: Wikipedia Search [cite: 48] ---
+            with st.spinner("Searching Wikipedia..."):
+                docs = retriever.get_relevant_documents(query=industry)
+                # Take top 5 as required [cite: 48, 50]
+                top_5_docs = docs[:5]
+                
+                st.subheader("Top 5 Wikipedia Sources")
+                for doc in top_5_docs:
+                    st.write(f"- {doc.metadata['source']}")
 
-######
-system_prompt = '''
-You are a professional business analyst at a large corporation.
-Your goal is to provide a concise market research report.
-Strictly adhere to a limit of 500 words. "
-Base your report ONLY on the provided Wikipedia data.
-If you do not know the exact answer, apologize and say that you do not know.
-'''
-
-# %%
-# set user prompt
-user_prompt = "YOUR TEXT HERE"
-
-######
-user_prompt =f"""
-I am a business analyst conducting market research for industries. 
-
-Based on the provided Wikipedia data , please generate a comprehensive industry report. 
-
-Requirements:
-1. The report must be less than 500 words.
-2. Use professional business language.
-3. Focus on key industry trends, major players, and market structure found in the text.
-"""
-
-# %%
-# Main area keeps the chat
-st.header("4. Chatbot")
-
-# Session state is a dictionary that saves the data that persists across reruns
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Display chat history
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):  # "user" or "assistant"
-        st.write(msg["content"])
-        
-# Accept user input
-if prompt := st.chat_input("Ask a question about the industry"):
-    # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    # Display user message in chat message container
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-# Display assistant response in chat message container
-with st.chat_message("assistant"):
-    stream = client.chat.completions.create(
-        model=st.session_state["openai_model"],
-        messages=[
-            {"role": m["role"], "content": m["content"]}
-            for m in st.session_state.messages
-        ],
-        stream=True,
-    )
-    response = st.write_stream(stream)
-st.session_state.messages.append({"role": "assistant", "content": response})
-
+            # --- STEP 3: Report Generation [cite: 49, 50] ---
+            with st.spinner("Generating Industry Report..."):
+                # Combine content from the 5 docs
+                context = "\n\n".join([doc.page_content for doc in top_5_docs])
+                
+                prompt = ChatPromptTemplate.from_template("""
+                You are a business analyst. Based on the following Wikipedia data, 
+                write a market research report for the {industry} industry. 
+                The report must be less than 500 words.
+                
+                Data: {context}
+                """)
+                
+                chain = prompt | llm
+                report = chain.invoke({"industry": industry, "context": context})
+                
+                st.subheader("Industry Report")
+                st.write(report.content)
+                
+                # Check word count 
+                word_count = len(report.content.split())
+                st.caption(f"Word count: {word_count}")
