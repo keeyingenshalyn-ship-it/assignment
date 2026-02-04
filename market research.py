@@ -11,7 +11,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle  #for saving and loading ML models
-from sklearn.linear_model import LinearRegression
 import time
 from langchain_community.retrievers import WikipediaRetriever
 from langchain_core.prompts import ChatPromptTemplate
