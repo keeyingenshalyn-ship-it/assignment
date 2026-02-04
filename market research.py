@@ -37,13 +37,6 @@ with st.sidebar:
 
 # %% [markdown]
 # ## Build the assistant 
-
-# %%
-# initialize model
-llm = ChatOpenAI(
-    temperature=temperature,
-    openai_api_key=user_api_key
-)
 # --- STEP 1: Industry Input & Validation ---
 industry = st.text_input("Enter an industry to research:")
 
