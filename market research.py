@@ -14,9 +14,10 @@ import time
 from langchain_community.retrievers import WikipediaRetriever
 retriever = WikipediaRetriever()
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 
-
+model = "gemma-3-1b-it"
+llm = ChatGoogleGenerativeAI(api_key=user_api_key)
 
 # %%
 st.title("Industry research assistant")
@@ -27,7 +28,7 @@ st.title("Industry research assistant")
 with st.sidebar:
     st.title("Settings")
     user_api_key = st.text_input(
-        "OpenAI API Key", 
+        "API Key", 
         type="password", 
         help="The key is not stored and remains in your browser session."
     )
@@ -66,7 +67,6 @@ if st.button("Generate Report"):
             
             Data: {context}
             """)
-            llm = ChatOpenAI
             chain = prompt | llm
             report = chain.invoke({"industry": industry, "context": context})
             
