@@ -49,22 +49,22 @@ llm = ChatOpenAI(
  # --- STEP 1: Industry Input & Validation [cite: 46, 47] ---
 industry = st.text_input("Enter an industry to research:")
     
-    if st.button("Generate Report"):
-        if not industry:
+if st.button("Generate Report"):
+    if not industry:
             st.warning("Please provide an industry to proceed.")
-        else:
-            # --- STEP 2: Wikipedia Search [cite: 48] ---
-            with st.spinner("Searching Wikipedia..."):
+    else:
+         # --- STEP 2: Wikipedia Search [cite: 48] ---
+         with st.spinner("Searching Wikipedia..."):
                 docs = retriever.get_relevant_documents(query=industry)
                 # Take top 5 as required [cite: 48, 50]
                 top_5_docs = docs[:5]
                 
                 st.subheader("Top 5 Wikipedia Sources")
-                for doc in top_5_docs:
+             for doc in top_5_docs:
                     st.write(f"- {doc.metadata['source']}")
 
             # --- STEP 3: Report Generation [cite: 49, 50] ---
-            with st.spinner("Generating Industry Report..."):
+                with st.spinner("Generating Industry Report..."):
                 # Combine content from the 5 docs
                 context = "\n\n".join([doc.page_content for doc in top_5_docs])
                 
