@@ -82,3 +82,10 @@ if st.button("Generate Report"):
             # Check word count 
             word_count = len(report.content.split())
             st.caption(f"Word count: {word_count}")
+
+try:
+    report = chain.invoke({"industry": industry, "context": context})
+    st.write(report.content)
+except Exception as e:
+    st.error(f"An error occurred: {e}")
+    st.info("Tip: Check your OpenAI quota or try again in a moment.")
