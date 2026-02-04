@@ -39,7 +39,6 @@ with st.sidebar:
 
 # %%
 # initialize model
-max_output_tokens = 100
 llm = ChatOpenAI(
     temperature=temperature,
     max_output_tokens=max_output_tokens,
