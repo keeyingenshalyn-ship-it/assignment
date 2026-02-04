@@ -45,43 +45,42 @@ llm = ChatOpenAI(
     max_output_tokens=max_output_tokens,
     openai_api_key=user_api_key
 )
-
- # --- STEP 1: Industry Input & Validation [cite: 46, 47] ---
+# --- STEP 1: Industry Input & Validation [cite: 46, 47] ---
 industry = st.text_input("Enter an industry to research:")
-    
+
 if st.button("Generate Report"):
     if not industry:
-            st.warning("Please provide an industry to proceed.")
+        st.warning("Please provide an industry to proceed.")
     else:
-         # --- STEP 2: Wikipedia Search [cite: 48] ---
-         with st.spinner("Searching Wikipedia..."):
-                docs = retriever.get_relevant_documents(query=industry)
-                # Take top 5 as required [cite: 48, 50]
-                top_5_docs = docs[:5]
-                
-                st.subheader("Top 5 Wikipedia Sources")
-             for doc in top_5_docs:
-                    st.write(f"- {doc.metadata['source']}")
+        # --- STEP 2: Wikipedia Search [cite: 48] ---
+        with st.spinner("Searching Wikipedia..."):
+            docs = retriever.get_relevant_documents(query=industry)
+            # Take top 5 as required [cite: 48, 50]
+            top_5_docs = docs[:5]
+            
+            st.subheader("Top 5 Wikipedia Sources")
+            for doc in top_5_docs:
+                st.write(f"- {doc.metadata['source']}")
 
-            # --- STEP 3: Report Generation [cite: 49, 50] ---
-                with st.spinner("Generating Industry Report..."):
-                # Combine content from the 5 docs
-                context = "\n\n".join([doc.page_content for doc in top_5_docs])
-                
-                prompt = ChatPromptTemplate.from_template("""
-                You are a business analyst. Based on the following Wikipedia data, 
-                write a market research report for the {industry} industry. 
-                The report must be less than 500 words.
-                
-                Data: {context}
-                """)
-                
-                chain = prompt | llm
-                report = chain.invoke({"industry": industry, "context": context})
-                
-                st.subheader("Industry Report")
-                st.write(report.content)
-                
-                # Check word count 
-                word_count = len(report.content.split())
-                st.caption(f"Word count: {word_count}")
+        # --- STEP 3: Report Generation [cite: 49, 50] ---
+        with st.spinner("Generating Industry Report..."):
+            # Combine content from the 5 docs
+            context = "\n\n".join([doc.page_content for doc in top_5_docs])
+            
+            prompt = ChatPromptTemplate.from_template("""
+            You are a business analyst. Based on the following Wikipedia data, 
+            write a market research report for the {industry} industry. 
+            The report must be less than 500 words.
+            
+            Data: {context}
+            """)
+            
+            chain = prompt | llm
+            report = chain.invoke({"industry": industry, "context": context})
+            
+            st.subheader("Industry Report")
+            st.write(report.content)
+            
+            # Check word count 
+            word_count = len(report.content.split())
+            st.caption(f"Word count: {word_count}")
