@@ -31,14 +31,14 @@ with st.sidebar:
         help="The key is not stored and remains in your browser session."
     )
     temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.7)
-    model = st.sidebar.selectbox("Model", ["gemini-pro-preview"])
+    model = st.sidebar.selectbox("Model", ["gemini-2.5-pro"])
 
 
 # %% [markdown]
 # ## Build the assistant 
 # Initialize Gemini
 llm = ChatGoogleGenerativeAI(
-            model="gemini-pro-preview", 
+            model="gemini-2.5-pro", 
             google_api_key=user_api_key,
             temperature=0.3) #
 
