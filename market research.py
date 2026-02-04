@@ -6,13 +6,13 @@
 # # Install the packages
 
 # %%
-
 import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle  #for saving and loading ML models
 import time
 from langchain_community.retrievers import WikipediaRetriever
+retriever = WikipediaRetriever()
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
