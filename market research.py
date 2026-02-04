@@ -65,12 +65,9 @@ user_prompt = "YOUR TEXT HERE"
 
 ######
 user_prompt =f"""
-I am a business analyst conducting market research on the {industry}industry. 
+I am a business analyst conducting market research for industries. 
 
-Based ONLY on the provided Wikipedia data below, please generate a comprehensive industry report. 
-
-Retrieved Wikipedia Data:
-{context}
+Based on the provided Wikipedia data , please generate a comprehensive industry report. 
 
 Requirements:
 1. The report must be less than 500 words.
