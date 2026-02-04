@@ -16,11 +16,6 @@ retriever = WikipediaRetriever()
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-# Initialize Gemini
-llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash", 
-            google_api_key=user_api_key,
-            temperature=0.3) #
 
 # %%
 st.title("Industry research assistant")
@@ -41,6 +36,12 @@ with st.sidebar:
 
 # %% [markdown]
 # ## Build the assistant 
+# Initialize Gemini
+llm = ChatGoogleGenerativeAI(
+            model="gemini-1.5-flash", 
+            google_api_key=user_api_key,
+            temperature=0.3) #
+
 # --- STEP 1: Industry Input & Validation ---
 industry = st.text_input("Enter an industry to research:")
 
