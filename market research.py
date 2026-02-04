@@ -47,7 +47,7 @@ llm = ChatOpenAI(
 )
 
  # --- STEP 1: Industry Input & Validation [cite: 46, 47] ---
-    industry = st.text_input("Enter an industry to research:")
+industry = st.text_input("Enter an industry to research:")
     
     if st.button("Generate Report"):
         if not industry:
