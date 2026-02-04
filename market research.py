@@ -14,7 +14,8 @@ import time
 from langchain_community.retrievers import WikipediaRetriever
 retriever = WikipediaRetriever()
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
+
 
 
 # %%
@@ -37,11 +38,12 @@ with st.sidebar:
 # %% [markdown]
 # ## Build the assistant 
 # Initialize Gemini
-llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-pro", 
-            google_api_key=user_api_key,
-            temperature=0.3) #
-
+llm = ChatOpenAI(
+    model="gemini-1.5-flash", 
+    openai_api_key=user_api_key, # Use your 引力AI key here
+    base_url="https://api.yinli.ai/v1", # This is the critical change
+    temperature=0.3
+)
 # --- STEP 1: Industry Input & Validation ---
 industry = st.text_input("Enter an industry to research:")
 
