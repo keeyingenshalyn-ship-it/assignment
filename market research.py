@@ -87,5 +87,12 @@ if "messages" not in st.session_state:
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):  # "user" or "assistant"
         st.write(msg["content"])
-
+        
+# Accept user input
+if prompt := st.chat_input("Ask a question about the industry"):
+    # Add user message to chat history
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    # Display user message in chat message container
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
