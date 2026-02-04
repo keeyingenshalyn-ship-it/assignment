@@ -86,4 +86,4 @@ try:
     st.write(report.content)
 except Exception as e:
     st.error(f"An error occurred: {e}")
-    st.info("Tip: Check your OpenAI quota or try again in a moment.")
+    st.info("Tip: Check your Gemini quota or try again in a moment.")
