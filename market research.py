@@ -31,7 +31,7 @@ with st.sidebar:
         help="The key is not stored and remains in your browser session."
     )
     temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.7)
-    model = st.sidebar.selectbox("Model", ["gpt-4", "gpt-3.5-turbo"])
+    model = st.sidebar.selectbox("Model", ["gpt-3.5-turbo"])
 
 
 # %% [markdown]
