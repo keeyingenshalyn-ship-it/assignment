@@ -41,7 +41,6 @@ with st.sidebar:
 # initialize model
 llm = ChatOpenAI(
     temperature=temperature,
-    max_output_tokens=max_output_tokens,
     openai_api_key=user_api_key
 )
 # --- STEP 1: Industry Input & Validation ---
