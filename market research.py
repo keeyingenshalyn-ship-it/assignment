@@ -15,6 +15,7 @@ from langchain_community.retrievers import WikipediaRetriever
 retriever = WikipediaRetriever()
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 
 # %%
@@ -31,7 +32,7 @@ with st.sidebar:
         help="The key is not stored and remains in your browser session."
     )
     temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.7)
-    model = st.sidebar.selectbox("Model", ["gpt-3.5-turbo"])
+    model = st.sidebar.selectbox("Model", ["gpt-3.5-turbo", "gemma-3-1b-it" ])
 
 
 # %% [markdown]
