@@ -39,9 +39,8 @@ with st.sidebar:
 # ## Build the assistant 
 # Initialize Gemini
 llm = ChatGoogleGenerativeAI(
-    model="Gemini 2.5 Flash-Lite", 
-    openai_api_key=user_api_key, # Use your 引力AI key here
-    base_url="https://api.yinli.ai/v1", # This is the critical change
+    model="gemini-2.5-flash-lite", 
+    openai_api_key=user_api_key,
     temperature=0.3
 )
 # --- STEP 1: Industry Input & Validation ---
