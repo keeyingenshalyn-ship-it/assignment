@@ -32,14 +32,14 @@ with st.sidebar:
         help="The key is not stored and remains in your browser session."
     )
     temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.7)
-    model = st.sidebar.selectbox("Model", ["gemini-1.5-flash"])
+    model = st.sidebar.selectbox("Model", ["Gemini 2.5 Flash-Lite"])
 
 
 # %% [markdown]
 # ## Build the assistant 
 # Initialize Gemini
-llm = ChatOpenAI(
-    model="gemini-1.5-flash", 
+llm = ChatGoogleGenerativeAI(
+    model="Gemini 2.5 Flash-Lite", 
     openai_api_key=user_api_key, # Use your 引力AI key here
     base_url="https://api.yinli.ai/v1", # This is the critical change
     temperature=0.3
