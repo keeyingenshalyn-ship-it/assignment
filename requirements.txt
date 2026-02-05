@@ -1,6 +1,6 @@
 streamlit
 langchain
-langchain-openai
+langchain-ChatGoogleGenerativeAI
 langchain-community
 wikipedia
 python-dotenv
