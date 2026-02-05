@@ -22,29 +22,19 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 st.title("Industry research assistant")
 
 # %%
-# --- Sidebar
-# This keeps the key hidden from view and doesn't hardcode it.
+# --- Sidebar ---
 with st.sidebar:
     st.title("Settings")
-    user_api_key = st.text_input(
-        "API Key", 
-        type="password", 
-        help="The key is not stored and remains in your browser session."
-    )
     temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.7)
-    model = st.sidebar.selectbox("Model", ["Gemini 2.5 Flash-Lite"])
+    model_choice = st.sidebar.selectbox("Model", ["Gemini 2.5 Flash-Lite"])
 
-
-# %% [markdown]
-# ## Build the assistant 
-# Initialize Gemini
-
+# --- Build the assistant ---
+# Initialize Gemini using the Secret directly
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash-lite",
-    api_key=st.secrets[user_api_key], # Pulls directly from the Secrets console
-    temperature=0.3
+    api_key=st.secrets["GOOGLE_API_KEY"], 
+    temperature=temperature 
 )
-
 # --- STEP 1: Industry Input & Validation ---
 industry = st.text_input("Enter an industry to research:")
 
