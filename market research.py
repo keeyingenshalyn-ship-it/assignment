@@ -38,11 +38,13 @@ with st.sidebar:
 # %% [markdown]
 # ## Build the assistant 
 # Initialize Gemini
+
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash-lite", 
-    google_api_key=user_api_key,
+    model="gemini-2.5-flash-lite",
+    api_key=st.secrets["GOOGLE_API_KEY"], # Pulls directly from the Secrets console
     temperature=0.3
 )
+
 # --- STEP 1: Industry Input & Validation ---
 industry = st.text_input("Enter an industry to research:")
 
