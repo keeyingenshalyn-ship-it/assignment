@@ -41,7 +41,7 @@ with st.sidebar:
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash-lite",
-    api_key=st.secrets["GOOGLE_API_KEY"], # Pulls directly from the Secrets console
+    api_key=st.secrets[user_api_key], # Pulls directly from the Secrets console
     temperature=0.3
 )
 
