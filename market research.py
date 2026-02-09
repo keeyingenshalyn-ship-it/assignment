@@ -73,19 +73,26 @@ if st.button("Generate Report"):
             # Check word count 
             word_count = len(report.content.split())
             st.caption(f"Word count: {word_count}")
+from langchain_community.retrievers import WikipediaRetriever
+
 retriever = WikipediaRetriever()
 
-# 2. Logic to handle results (Step 2 of your assignment)
 try:
+    # Attempt to retrieve documents based on the industry query
     docs = retriever.invoke(industry)
     
-    # Check if we found fewer than 5 sources
+    # Manually check if the number of sources meets your minimum requirement
     if len(docs) < 5:
-        # Option A: Show a manual warning directly
-        st.warning(f"Note: Only {len(docs)} relevant Wikipedia sources were found for '{industry}'.")
-        
+        raise ValueError(f"Insufficient data: Found only {len(docs)} sources. 5 required.")
     
+    # If check passes, slice to exactly 5 sources as per assignment Q2
+    docs = docs[:5]
     
+except ValueError as e:
+    # Specifically handle the case of low source count
+    st.warning(f"Market Research Warning: {e}")
+    # Optional: You can still proceed with fewer docs if desired
+    # docs = docs 
 except Exception as e:
-    # This block ONLY runs if there is a real crash (e.g., no internet, API error)
-    st.error(f"A system error occurred: {e}")
+    # Handle other potential issues (e.g., connection errors)
+    st.error(f"An unexpected error occurred: {e}")
