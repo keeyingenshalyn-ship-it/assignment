@@ -84,11 +84,7 @@ try:
         # Option A: Show a manual warning directly
         st.warning(f"Note: Only {len(docs)} relevant Wikipedia sources were found for '{industry}'.")
         
-        # Option B: Or manually "raise" an error to trigger the except block below
-        # raise ValueError("Insufficient data found on Wikipedia.")
-
-    # Proceed only with what was found (max 5)
-    docs = docs[:5]
+    
     
 except Exception as e:
     # This block ONLY runs if there is a real crash (e.g., no internet, API error)
