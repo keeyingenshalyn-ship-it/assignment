@@ -80,6 +80,8 @@ if st.session_state.is_valid and industry.strip():
             st.subheader(f"Top Wikipedia Sources ({len(docs)})")
             for doc in docs:
                 st.write(f"- {doc.metadata['source']}")
+    except Exception as e:
+        st.error(f"Retrieval error: {e}")
 
 # --- STEP 3: INDUSTRY REPORT GENERATION ---
 if st.session_state.is_valid:
