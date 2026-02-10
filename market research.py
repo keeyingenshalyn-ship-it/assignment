@@ -22,22 +22,21 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 st.title("Industry research assistant")
 
 # %%
-# --- SIDEBAR CONFIGURATION (Requirement Q0) ---
+# --- SIDEBAR (Requirement Q0) ---
 with st.sidebar:
     st.title("Settings")
     # (a) Dropdown for selecting the LLM
-    model_choice = st.selectbox("Select LLM", ["gemini-1.5-flash", "gemini-1.5-pro","gemini-2.5-flash-lite","gemini-2.5-pro"])
-    # (b) Text field for API key
+    model_choice = st.selectbox("Select LLM", ["gemini-1.5-flash", "gemini-1.5-pro"])
+    # (b) Text field for entering our API key
     user_api_key = st.text_input("Enter Google API Key", type="password")
-    temp = st.slider("Temperature", 0.0, 1.0, 0.3)
     
-# --- Build the assistant ---
-# Initialize Gemini using the Secret directly
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash-lite",
-    api_key=st.secrets["GOOGLE_API_KEY"], 
-    temperature=temperature 
-)
+    # Optional but recommended for Q5
+    temperature = st.slider("Creativity (Temperature)", 0.0, 1.0, 0.3)
+
+# --- INITIALIZATION ---
+# Initialize session state variables to fix NameErrors
+if 'is_valid' not in st.session_state:
+    st.session_state.is_valid = False
 
 # --- STEP 1: INDUSTRY SELECTION & VALIDATION ---
 st.header("Step 1: Industry Selection")
