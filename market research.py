@@ -68,7 +68,8 @@ if st.session_state.is_valid:
     st.success(f"Confirmed: '{industry}' is a valid sector.")
     
 # --- STEP 2: SOURCE RETRIEVAL ---
-st.header("Step 2: Source Retrieval")
+if st.session_state.is_valid and industry.strip():
+    st.header("Step 2: Source Retrieval")
 
 try:
     with st.spinner("Searching Wikipedia..."):
