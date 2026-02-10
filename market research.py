@@ -32,7 +32,7 @@ with st.sidebar:
     # (a) Dropdown for selecting the LLM
     model_choice = st.selectbox("Select LLM", ["gemini-1.5-flash", "gemini-1.5-pro"])
     # (b) Text field for entering our API key
-    user_api_key = st.text_input("Enter Google API Key", type="password")
+    api_key = st.text_input("Enter Google API Key", type="password")
     
     # Optional but recommended for Q5
     temperature = st.slider("Creativity (Temperature)", 0.0, 1.0, 0.3)
