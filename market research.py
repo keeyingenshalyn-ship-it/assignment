@@ -25,7 +25,7 @@ if 'is_valid' not in st.session_state:
 with st.sidebar:
     st.title("Settings")
     # (a) Dropdown for selecting the LLM
-    model_choice = st.selectbox("Select LLM", ["gemini-1.5-flash", "gemini-1.5-pro","gemini-2.5-flash-lite","gemini-2.5-pro"])
+    model_choice = st.selectbox("Select LLM", ["gemini-2.5-flash-lite"])
     # (b) Text field for entering the API key
     user_api_key = st.text_input("Enter Google API Key", type="password")
     # Temperature slider for performance improvement
