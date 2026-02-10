@@ -79,7 +79,7 @@ if st.session_state.is_valid and industry.strip():
             docs = docs[:5]
             st.subheader(f"Top Wikipedia Sources ({len(docs)})")
             for doc in docs:
-                st.write(f"- {doc.metadata['source']}"
+                st.write(f"- {doc.metadata['source']}")
 
 # --- STEP 3: INDUSTRY REPORT GENERATION ---
 if st.session_state.is_valid:
