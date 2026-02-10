@@ -48,6 +48,7 @@ def validate_industry(llm, query):
     return "yes" in response
 
 # Execution Trigger
+is_valid = False
 if st.button("Generate Market Report"):
     if not industry.strip():
         # Q1 Requirement: Ask for update if empty
