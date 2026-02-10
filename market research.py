@@ -39,12 +39,12 @@ st.header("Step 1: Industry Selection")
 industry = st.text_input("Enter the industry you wish to research:", placeholder="e.g., Fintech")
 
 if st.button("Generate Market Report"):
-    # Fix for Wikipedia crash: Ensure input is not empty
-   if not industry.strip():
+    # FIX for srsearch error: Never search with empty or whitespace input
+    if not industry.strip():
         st.warning("Please provide an industry name to proceed.")
         st.session_state.is_valid = False
-  elif not user_api_key:
-         st.error("Please enter your API key in the sidebar.")
+    elif not user_api_key:
+        st.error("Please enter your API key in the sidebar.")
     else:
         try:
             # Initialize model safely
