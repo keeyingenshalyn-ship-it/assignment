@@ -20,6 +20,10 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 # %%
 st.title("Industry research assistant")
+# --- INITIALIZATION ---
+# Initialize session state variables to fix NameErrors
+if 'is_valid' not in st.session_state:
+    st.session_state.is_valid = False
 
 # %%
 # --- SIDEBAR (Requirement Q0) ---
@@ -33,10 +37,6 @@ with st.sidebar:
     # Optional but recommended for Q5
     temperature = st.slider("Creativity (Temperature)", 0.0, 1.0, 0.3)
 
-# --- INITIALIZATION ---
-# Initialize session state variables to fix NameErrors
-if 'is_valid' not in st.session_state:
-    st.session_state.is_valid = False
 
 # --- STEP 1: INDUSTRY SELECTION ---
 st.header("Step 1: Industry Selection")
