@@ -99,7 +99,7 @@ except Exception as e:
     st.error(f"An unexpected system error occurred: {e}")
     st.session_state.is_valid = False
             # --- STEP 3: INDUSTRY REPORT ---
-            st.header("Step 3: Industry Report")
+    st.header("Step 3: Industry Report")
             
             with st.spinner("Generating professional report..."):
                 # System Prompt defines the "Business Analyst" persona
