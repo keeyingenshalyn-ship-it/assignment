@@ -26,7 +26,7 @@ st.title("Industry research assistant")
 with st.sidebar:
     st.title("Settings")
     # (a) Dropdown for selecting the LLM
-    model_choice = st.selectbox("Select LLM", ["gemini-1.5-flash", "gemini-1.5-pro"])
+    model_choice = st.selectbox("Select LLM", ["gemini-1.5-flash", "gemini-1.5-pro","gemini-2.5-flash","gemini-2.5-pro"])
     # (b) Text field for API key
     user_api_key = st.text_input("Enter Google API Key", type="password")
     temp = st.slider("Temperature", 0.0, 1.0, 0.3)
