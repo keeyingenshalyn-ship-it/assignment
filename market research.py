@@ -43,8 +43,8 @@ if st.button("Generate Market Report"):
    if not industry.strip():
         st.warning("Please provide an industry name to proceed.")
         st.session_state.is_valid = False
-    elif not user_api_key:
-        st.error("Please enter your API key in the sidebar.")
+  elif not user_api_key:
+         st.error("Please enter your API key in the sidebar.")
     else:
         try:
             # Initialize model safely
