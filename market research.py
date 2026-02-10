@@ -38,30 +38,32 @@ with st.sidebar:
 if 'is_valid' not in st.session_state:
     st.session_state.is_valid = False
 
-# --- STEP 1: INDUSTRY SELECTION & VALIDATION ---
+# --- STEP 1: INDUSTRY SELECTION ---
 st.header("Step 1: Industry Selection")
-industry = st.text_input("Enter the industry you wish to research:", placeholder="e.g., Renewable Energy")
+industry = st.text_input("Enter the industry you wish to research:")
 
-# Validation Function (The Guardrail)
-def validate_industry(llm, query):
-    # A simple, low-cost prompt to check intent
-    prompt = f"Is '{query}' a legitimate business industry or sector? Answer only 'Yes' or 'No'."
-    response = llm.invoke(prompt).content.strip().lower()
-    return "yes" in response
-
-# Execution Trigger
-is_valid = False
 if st.button("Generate Market Report"):
+    # Fix for Wikipedia srsearch error (image_8557c4.png)
     if not industry.strip():
-        # Q1 Requirement: Ask for update if empty
-        st.warning("Please provide an industry name to proceed.")
+        st.warning("Please provide an industry name.")
+    elif not api_key:
+        st.error("Please enter your API key in the sidebar.")
     else:
-        # Run Step 1 Validation
-        with st.spinner("Validating industry intent..."):
-            is_valid = validate_industry(llm, industry)
+        try:
+            # Initialize model safely
+            llm = ChatGoogleGenerativeAI(model=model_name, google_api_key=api_key, temperature=temp)
             
-        if is_valid:
-            st.success(f"Confirmed: '{industry}' is a valid sector.")
+            # Guardrail check
+            check_prompt = f"Is '{industry}' a valid business sector? Answer 'Yes' or 'No'."
+            response = llm.invoke(check_prompt).content.lower()
+            
+            if "yes" in response:
+                st.session_state.is_valid = True
+            else:
+                st.session_state.is_valid = False
+                st.error(f"'{industry}' is not recognized as a valid industry.")
+        except Exception as e:
+            st.error(f"Error: {e}")
             
             # --- Proceed to STEP 2: Wikipedia Retrieval ---
             st.header("Step 2: Source Retrieval")
