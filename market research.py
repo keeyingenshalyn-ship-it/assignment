@@ -99,39 +99,37 @@ except Exception as e:
     st.error(f"An unexpected system error occurred: {e}")
     st.session_state.is_valid = False
             # --- STEP 3: INDUSTRY REPORT ---
-    st.header("Step 3: Industry Report")
+st.header("Step 3: Industry Report")
             
-            with st.spinner("Generating professional report..."):
-                # System Prompt defines the "Business Analyst" persona
-                system_msg = (
+with st.spinner("Generating professional report..."):
+         # System Prompt defines the "Business Analyst" persona
+        system_msg = (
                     "You are a professional Business Analyst. "
                     "Write an objective market research report based on the context provided. "
-                    "The report must be professional and strictly under 500 words."
-                )
+                    "The report must be professional and strictly under 500 words."  )
                 
-                # User Prompt provides the data
-                context_data = "\n\n".join([d.page_content for d in docs])
-                human_msg = f"Write a report for the '{industry}' industry using this context: \n\n {context_data}"
+         # User Prompt provides the data
+         context_data = "\n\n".join([d.page_content for d in docs])
+         human_msg = f"Write a report for the '{industry}' industry using this context: \n\n {context_data}"
                 
-                messages = [
+         messages = [
                     SystemMessage(content=system_msg),
-                    HumanMessage(content=human_msg)
-                ]
+                    HumanMessage(content=human_msg) ]
                 
-                # Final LLM invocation
-                llm = ChatGoogleGenerativeAI(model=model_choice, google_api_key=user_api_key, temperature=temp)
-                report = llm.invoke(messages)
+         # Final LLM invocation
+        llm = ChatGoogleGenerativeAI(model=model_choice, google_api_key=user_api_key, temperature=temp)
+        report = llm.invoke(messages)
                 
-                st.markdown(report.content)
+         st.markdown(report.content)
                 
                 # Word count check 
-            if actual_word_count > 500:
-                st.warning(f"Note: Report is {actual_word_count} words. Please refine your prompt.")
-            else:
-                st.caption(f"Success: Report length is {actual_word_count} words.")
+ if actual_word_count > 500:
+      st.warning(f"Note: Report is {actual_word_count} words. Please refine your prompt.")
+else:
+     st.caption(f"Success: Report length is {actual_word_count} words.")
 
-        except Exception as e:
-            st.error(f"Error during report generation: {e}")
+    except Exception as e:
+        st.error(f"Error during report generation: {e}")
 
 # Add a Reset button to clear validation state for new searches
 if st.session_state.is_valid:
