@@ -63,24 +63,23 @@ if st.button("Generate Market Report"):
         except Exception as e:
             st.error(f"Validation Error: {e}")
 
-# --- 4. CONDITIONAL RENDERING  ---
-# This block only runs if Step 1 validation passes
-if st.session_state.is_valid:
+if st.session_state.is_valid and industry.strip():
     st.success(f"Confirmed: '{industry}' is a valid sector.")
     
     # --- STEP 2: SOURCE RETRIEVAL ---
     st.header("Step 2: Source Retrieval")
     try:
         retriever = WikipediaRetriever()
-        # Using .strip() is the specific fix for the srsearch parameter error
-        docs = retriever.invoke(industry.strip()) 
+        # Using .strip() prevents the srsearch parameter error
+        docs = retriever.invoke(industry.strip())
         
         if not docs:
-            st.error("No sources found. Please try a different industry.")
+            st.error("No sources found.")
         else:
-            # Display URLs as required by Q2
-            for doc in docs[:5]:
-                st.write(f"- {doc.metadata['source']}")
+            docs = docs[:5]
+            st.subheader(f"Top Wikipedia Sources ({len(docs)})")
+            for doc in docs:
+                st.write(f"- {doc.metadata['source']}"
 
 # --- STEP 3: INDUSTRY REPORT GENERATION ---
 if st.session_state.is_valid:
