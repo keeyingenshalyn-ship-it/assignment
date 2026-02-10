@@ -22,12 +22,15 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 st.title("Industry research assistant")
 
 # %%
-# --- Sidebar ---
+# --- SIDEBAR CONFIGURATION (Requirement Q0) ---
 with st.sidebar:
     st.title("Settings")
-    temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.7)
-    model_choice = st.sidebar.selectbox("Model", ["Gemini 2.5 Flash-Lite"])
-
+    # (a) Dropdown for selecting the LLM
+    model_choice = st.selectbox("Select LLM", ["gemini-1.5-flash", "gemini-1.5-pro"])
+    # (b) Text field for API key
+    user_api_key = st.text_input("Enter Google API Key", type="password")
+    temp = st.slider("Temperature", 0.0, 1.0, 0.3)
+    
 # --- Build the assistant ---
 # Initialize Gemini using the Secret directly
 llm = ChatGoogleGenerativeAI(
