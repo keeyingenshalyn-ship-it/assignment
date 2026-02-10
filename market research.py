@@ -67,7 +67,7 @@ if st.button("Generate Market Report"):
 if st.session_state.is_valid:
     st.success(f"Confirmed: '{industry}' is a valid sector.")
     
-   # --- STEP 2: SOURCE RETRIEVAL ---
+# --- STEP 2: SOURCE RETRIEVAL ---
 st.header("Step 2: Source Retrieval")
 
 try:
@@ -76,22 +76,27 @@ try:
         # Retrieve documents based on user industry input
         docs = retriever.invoke(industry)
         
-        # Check if the number of sources meets the requirement
-        if len(docs) < 5:
-            # Manually trigger the 'except' block with a custom message
-            raise ValueError(f"Insufficient data: Only {len(docs)} sources found. 5 required.")
-
-        # Proceed only if exactly 5 or more were found (slice to top 5)
-        docs = docs[:5]
+        # 1. Check for the "Less than 5" condition
+        if len(docs) > 0 and len(docs) < 5:
+            # Raise a warning but do NOT stop execution
+            st.warning(f"Note: Only {len(docs)} relevant sources were found. A minimum of 5 is recommended for a comprehensive report.")
         
-        st.subheader("Top 5 Wikipedia Sources")
-        for doc in docs:
-            st.write(f"- {doc.metadata['source']}") # Satisfies Q2 requirement
-
-except ValueError as e:
-    # This block runs specifically for the 'Insufficient data' error
-    st.error(f"Validation Error: {e}")
-    # Setting is_valid to False prevents Step 3 from running with bad data
+        # 2. Check if absolutely nothing was found to prevent a crash in Step 3
+        if not docs:
+            st.error("No relevant Wikipedia sources found. Step 3 cannot proceed.")
+            st.session_state.is_valid = False
+        else:
+            # Proceed with whatever sources were found (up to 5)
+            docs = docs[:5]
+            
+            st.subheader(f"Top Wikipedia Sources ({len(docs)} found)")
+            # Displaying URLs satisfies Q2 requirement
+            for doc in docs:
+                st.write(f"- {doc.metadata['source']}")
+                
+except Exception as e:
+    # This catches API or connection errors
+    st.error(f"An unexpected retrieval error occurred: {e}")
     st.session_state.is_valid = False
 
 # --- STEP 3: INDUSTRY REPORT GENERATION ---
