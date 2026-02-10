@@ -61,7 +61,7 @@ if st.button("Generate Market Report"):
         except Exception as e:
             st.error(f"Validation Error: {e}")
 
-# --- 4. CONDITIONAL RENDERING (Fixes Duplicate Headings) ---
+# --- 4. CONDITIONAL RENDERING  ---
 # This block only runs if Step 1 validation passes
 if st.session_state.is_valid:
     st.success(f"Confirmed: '{industry}' is a valid sector.")
@@ -77,7 +77,7 @@ if st.session_state.is_valid:
         if not docs:
             st.error("No Wikipedia sources found for this topic.")
         else:
-            # Displaying URLs satisfies Q2 requirement
+            # Displaying URLs
             st.subheader("Top 5 Wikipedia Sources")
             for doc in docs:
                 st.write(f"- {doc.metadata['source']}")
