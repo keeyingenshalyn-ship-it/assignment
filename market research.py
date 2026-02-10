@@ -15,6 +15,7 @@ from langchain_community.retrievers import WikipediaRetriever
 retriever = WikipediaRetriever()
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.messages import SystemMessage, HumanMessage
 
 # --- 1. INITIALIZATION ---
 # Initialize session state to prevent NameErrors
