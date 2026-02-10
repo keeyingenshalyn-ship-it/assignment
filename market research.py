@@ -67,22 +67,37 @@ if st.button("Generate Market Report"):
 if st.session_state.is_valid:
     st.success(f"Confirmed: '{industry}' is a valid sector.")
     
-    # --- STEP 2: SOURCE RETRIEVAL ---
-    st.header("Step 2: Source Retrieval")
-    
+   # --- STEP 2: SOURCE RETRIEVAL ---
+st.header("Step 2: Source Retrieval")
+
+try:
     with st.spinner("Searching Wikipedia..."):
         retriever = WikipediaRetriever()
-        # Return exactly 5 relevant pages
-        docs = retriever.invoke(industry)[:5]
+        # Retrieve documents based on user industry input
+        docs = retriever.invoke(industry)
         
-        if not docs:
-            st.error("No Wikipedia sources found for this topic.")
-        else:
-            # Displaying URLs
-            st.subheader("Top 5 Wikipedia Sources")
-            for doc in docs:
-                st.write(f"- {doc.metadata['source']}")
-            
+        # Check if the number of sources meets the requirement
+        if len(docs) < 5:
+            # Manually trigger the 'except' block with a custom message
+            raise ValueError(f"Insufficient data: Only {len(docs)} sources found. 5 required.")
+
+        # Proceed only if exactly 5 or more were found (slice to top 5)
+        docs = docs[:5]
+        
+        st.subheader("Top 5 Wikipedia Sources")
+        for doc in docs:
+            st.write(f"- {doc.metadata['source']}") # Satisfies Q2 requirement
+
+except ValueError as e:
+    # This block runs specifically for the 'Insufficient data' error
+    st.error(f"Validation Error: {e}")
+    # Setting is_valid to False prevents Step 3 from running with bad data
+    st.session_state.is_valid = False
+
+except Exception as e:
+    # This catches other issues like connection errors or API failures
+    st.error(f"An unexpected system error occurred: {e}")
+    st.session_state.is_valid = False
             # --- STEP 3: INDUSTRY REPORT ---
             st.header("Step 3: Industry Report")
             
@@ -109,9 +124,14 @@ if st.session_state.is_valid:
                 
                 st.markdown(report.content)
                 
-                # Word count check for Q3 compliance
-                word_count = len(report.content.split())
-                st.caption(f"Report Length: {word_count} words.")
+                # Word count check 
+            if actual_word_count > 500:
+                st.warning(f"Note: Report is {actual_word_count} words. Please refine your prompt.")
+            else:
+                st.caption(f"Success: Report length is {actual_word_count} words.")
+
+        except Exception as e:
+            st.error(f"Error during report generation: {e}")
 
 # Add a Reset button to clear validation state for new searches
 if st.session_state.is_valid:
