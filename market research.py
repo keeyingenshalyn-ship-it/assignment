@@ -16,111 +16,104 @@ retriever = WikipediaRetriever()
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-
-
-# %%
-st.title("Industry research assistant")
-# --- INITIALIZATION ---
-# Initialize session state variables to fix NameErrors
+# --- 1. INITIALIZATION ---
+# Initialize session state to prevent NameErrors
 if 'is_valid' not in st.session_state:
     st.session_state.is_valid = False
 
-# %%
-# --- SIDEBAR (Requirement Q0) ---
+# --- 2. SIDEBAR CONFIGURATION (Requirement Q0) ---
 with st.sidebar:
     st.title("Settings")
     # (a) Dropdown for selecting the LLM
     model_choice = st.selectbox("Select LLM", ["gemini-1.5-flash", "gemini-1.5-pro"])
-    # (b) Text field for entering our API key
-    api_key = st.text_input("Enter Google API Key", type="password")
-    
-    # Optional but recommended for Q5
-    temperature = st.slider("Creativity (Temperature)", 0.0, 1.0, 0.3)
+    # (b) Text field for entering the API key
+    user_api_key = st.text_input("Enter Google API Key", type="password")
+    # Temperature slider for performance improvement
+    temp = st.slider("Temperature (Creativity)", 0.0, 1.0, 0.3)
 
+st.title("Industry Research Assistant")
 
-# --- STEP 1: INDUSTRY SELECTION ---
+# --- 3. STEP 1: INDUSTRY SELECTION & GUARDRAIL ---
 st.header("Step 1: Industry Selection")
-industry = st.text_input("Enter the industry you wish to research:")
+industry = st.text_input("Enter the industry you wish to research:", placeholder="e.g., Fintech")
 
 if st.button("Generate Market Report"):
-    # Fix for Wikipedia srsearch error (image_8557c4.png)
+    # Fix for Wikipedia crash: Ensure input is not empty
     if not industry.strip():
-        st.warning("Please provide an industry name.")
-    elif not api_key:
+        st.warning("Please provide an industry name to proceed.") # Satisfies Q1
+    elif not user_api_key:
         st.error("Please enter your API key in the sidebar.")
     else:
         try:
             # Initialize model safely
-            llm = ChatGoogleGenerativeAI(model=model_name, google_api_key=api_key, temperature=temp)
+            llm = ChatGoogleGenerativeAI(model=model_choice, google_api_key=user_api_key, temperature=temp)
             
-            # Guardrail check
-            check_prompt = f"Is '{industry}' a valid business sector? Answer 'Yes' or 'No'."
+            # LLM Guardrail Validation
+            # Use a low-cost check to filter nonsense like "hello"
+            check_prompt = f"Is '{industry}' a valid business sector or industry? Answer only 'Yes' or 'No'."
             response = llm.invoke(check_prompt).content.lower()
             
             if "yes" in response:
                 st.session_state.is_valid = True
             else:
                 st.session_state.is_valid = False
-                st.error(f"'{industry}' is not recognized as a valid industry.")
+                st.error(f"'{industry}' is not recognized as a valid industry. Please try again.")
         except Exception as e:
-            st.error(f"Error: {e}")
-            
-            # --- Proceed to STEP 2: Wikipedia Retrieval ---
-            st.header("Step 2: Source Retrieval")
-            # (Your retriever code goes here)
-            
-        else:
-            # Handle invalid input like "hello"
-            st.error(f"'{industry}' does not appear to be a valid business industry. Please try a more specific term.")
+            st.error(f"Validation Error: {e}")
 
-if is_valid:
+# --- 4. CONDITIONAL RENDERING (Fixes Duplicate Headings) ---
+# This block only runs if Step 1 validation passes
+if st.session_state.is_valid:
     st.success(f"Confirmed: '{industry}' is a valid sector.")
     
     # --- STEP 2: SOURCE RETRIEVAL ---
     st.header("Step 2: Source Retrieval")
     
-    with st.spinner("Searching Wikipedia for industry data..."):
-        try:
-            retriever = WikipediaRetriever()
-            # Return exactly 5 relevant pages
-            docs = retriever.invoke(industry)[:5]
-            
-            if len(docs) == 0:
-                st.error("No relevant Wikipedia pages found. Please refine your industry name.")
-            else:
-                if len(docs) < 5:
-                    st.warning(f"Note: Only {len(docs)} sources were found. 5 are typically required.")
-                
-                st.subheader("Top 5 Wikipedia Sources")
-                # Displaying URLs satisfies Q2 requirement
-                for doc in docs:
-                    st.write(f"- {doc.metadata['source']}")
-                
-                # Store content for Step 3
-                context_data = "\n\n".join([d.page_content for d in docs])
-                
-        except Exception as e:
-            st.error(f"Retrieval error: {e}")
-    
-    # --- STEP 3: MARKET RESEARCH REPORT ---
-    st.header("Step 3: Industry Report")
-    
-    with st.spinner("Synthesizing market report..."):
-        # Prompt engineering to ensure persona and word count compliance
-        report_prompt = (
-            f"You are a professional Business Analyst. Write a market research report "
-            f"for the '{industry}' industry based on this context: {context_data}. "
-            f"The report must be professional and strictly under 500 words."
-        )
+    with st.spinner("Searching Wikipedia..."):
+        retriever = WikipediaRetriever()
+        # Return exactly 5 relevant pages
+        docs = retriever.invoke(industry)[:5]
         
-        try:
-            # Generate the report
-            report = llm.invoke(report_prompt)
-            st.markdown(report.content)
+        if not docs:
+            st.error("No Wikipedia sources found for this topic.")
+        else:
+            # Displaying URLs satisfies Q2 requirement
+            st.subheader("Top 5 Wikipedia Sources")
+            for doc in docs:
+                st.write(f"- {doc.metadata['source']}")
             
-            # Simple word count check to ensure Q3 compliance
-            word_count = len(report.content.split())
-            st.caption(f"Report Length: {word_count} words.")
+            # --- STEP 3: INDUSTRY REPORT ---
+            st.header("Step 3: Industry Report")
             
-        except Exception as e:
-            st.error(f"Generation error: {e}")
+            with st.spinner("Generating professional report..."):
+                # System Prompt defines the "Business Analyst" persona
+                system_msg = (
+                    "You are a professional Business Analyst. "
+                    "Write an objective market research report based on the context provided. "
+                    "The report must be professional and strictly under 500 words."
+                )
+                
+                # User Prompt provides the data
+                context_data = "\n\n".join([d.page_content for d in docs])
+                human_msg = f"Write a report for the '{industry}' industry using this context: \n\n {context_data}"
+                
+                messages = [
+                    SystemMessage(content=system_msg),
+                    HumanMessage(content=human_msg)
+                ]
+                
+                # Final LLM invocation
+                llm = ChatGoogleGenerativeAI(model=model_choice, google_api_key=user_api_key, temperature=temp)
+                report = llm.invoke(messages)
+                
+                st.markdown(report.content)
+                
+                # Word count check for Q3 compliance
+                word_count = len(report.content.split())
+                st.caption(f"Report Length: {word_count} words.")
+
+# Add a Reset button to clear validation state for new searches
+if st.session_state.is_valid:
+    if st.button("Start New Search"):
+        st.session_state.is_valid = False
+        st.rerun()
