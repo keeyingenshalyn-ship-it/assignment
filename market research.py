@@ -68,38 +68,19 @@ if st.button("Generate Market Report"):
 if st.session_state.is_valid:
     st.success(f"Confirmed: '{industry}' is a valid sector.")
     
-# --- STEP 2: SOURCE RETRIEVAL ---
-if st.session_state.is_valid and industry.strip():
-    st.success(f"Confirmed: '{industry}' is a valid sector.")
-
-try:
-    with st.spinner("Searching Wikipedia..."):
+    # --- STEP 2: SOURCE RETRIEVAL ---
+    st.header("Step 2: Source Retrieval")
+    try:
         retriever = WikipediaRetriever()
-        # Retrieve documents based on user industry input
-        docs = retriever.invoke(industry)
+        # Using .strip() is the specific fix for the srsearch parameter error
+        docs = retriever.invoke(industry.strip()) 
         
-        # 1. Check for the "Less than 5" condition
-        if len(docs) > 0 and len(docs) < 5:
-            # Raise a warning but do NOT stop execution
-            st.warning(f"Note: Only {len(docs)} relevant sources were found. A minimum of 5 is recommended for a comprehensive report.")
-        
-        # 2. Check if absolutely nothing was found to prevent a crash in Step 3
         if not docs:
-            st.error("No relevant Wikipedia sources found. Step 3 cannot proceed.")
-            st.session_state.is_valid = False
+            st.error("No sources found. Please try a different industry.")
         else:
-            # Proceed with whatever sources were found (up to 5)
-            docs = docs[:5]
-            
-            st.subheader(f"Top Wikipedia Sources ({len(docs)} found)")
-            # Displaying URLs satisfies Q2 requirement
-            for doc in docs:
+            # Display URLs as required by Q2
+            for doc in docs[:5]:
                 st.write(f"- {doc.metadata['source']}")
-                
-except Exception as e:
-    # This catches API or connection errors
-    st.error(f"An unexpected retrieval error occurred: {e}")
-    st.session_state.is_valid = False
 
 # --- STEP 3: INDUSTRY REPORT GENERATION ---
 if st.session_state.is_valid:
