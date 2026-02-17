@@ -30,7 +30,7 @@ with st.sidebar:
     # (b) Text field for entering the API key
     user_api_key = st.text_input("Enter Google API Key", type="password")
     # Temperature for performance improvement
-    fixed_temp = 0.3
+    fixed_temperature = 0.3
 st.title("Industry Research Assistant")
 
 # --- 3. STEP 1: INDUSTRY SELECTION & GUARDRAIL ---
@@ -47,7 +47,7 @@ if st.button("Generate Market Report"):
     else:
         try:
             # Initialize model safely
-            llm = ChatGoogleGenerativeAI(model=model_choice, google_api_key=user_api_key, temperature=fixed_temp)
+            llm = ChatGoogleGenerativeAI(model=model_choice, google_api_key=user_api_key, temperature=fixed_temperature)
             
             # LLM Guardrail Validation
             # Use a low-cost check to filter nonsense like "hello"
