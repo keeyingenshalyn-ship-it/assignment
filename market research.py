@@ -102,7 +102,7 @@ if st.session_state.is_valid:
         try:
             # Combining prompts for the Gemini model
             from langchain_core.messages import SystemMessage, HumanMessage
-            llm_gen = ChatGoogleGenerativeAI(model=model_choice, google_api_key=user_api_key, temperature=temp)
+            llm_gen = ChatGoogleGenerativeAI(model=model_choice, google_api_key=user_api_key, temperature=fixed_temperature)
             report = llm_gen.invoke([
                 SystemMessage(content=system_message),
                 HumanMessage(content=user_message)
