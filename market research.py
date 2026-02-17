@@ -29,9 +29,8 @@ with st.sidebar:
     model_choice = st.selectbox("Select LLM", ["gemini-2.5-flash-lite"])
     # (b) Text field for entering the API key
     user_api_key = st.text_input("Enter Google API Key", type="password")
-    # Temperature slider for performance improvement
-    temp = st.slider("Model Temperature", min_value=0.0, max_value=1.0, value=0.3, step=0.1)
-
+    # Temperature for performance improvement
+    fixed_temp = 0.3
 st.title("Industry Research Assistant")
 
 # --- 3. STEP 1: INDUSTRY SELECTION & GUARDRAIL ---
@@ -48,7 +47,7 @@ if st.button("Generate Market Report"):
     else:
         try:
             # Initialize model safely
-            llm = ChatGoogleGenerativeAI(model=model_choice, google_api_key=user_api_key, temperature=temp)
+            llm = ChatGoogleGenerativeAI(model=model_choice, google_api_key=user_api_key, temperature=fixed_temp)
             
             # LLM Guardrail Validation
             # Use a low-cost check to filter nonsense like "hello"
