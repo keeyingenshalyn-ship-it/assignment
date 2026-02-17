@@ -30,7 +30,7 @@ with st.sidebar:
     # (b) Text field for entering the API key
     user_api_key = st.text_input("Enter Google API Key", type="password")
     # Temperature slider for performance improvement
-    temp = st.slider("Temperature (Creativity)", 0.0, 1.0, 0.3)
+    temp = st.slider("Temperature (Creativity)", 0.3)
 
 st.title("Industry Research Assistant")
 
